@@ -8,7 +8,7 @@ console.log(process.env.JWT_SECRET);
 // const authenticate = require('../auth/authenticate-middleware.js');
 const authRouter = require('../auth/auth-router.js');
 const apiRouter = require('./api-router');
-const usersRouter = require('../users/users-router');
+const usersRouter = require('../users/user-router');
 
 const server = express();
 
