@@ -23,9 +23,9 @@ router.post('/register', (req, res) => {
 });
 
 router.post('/login', (req, res) => {
-    let {username, password} = req.body;
+    let {email, password} = req.body;
 
-    Users.findBy({username})
+    Users.findBy({email})
     .first()
     .then(user => {
         if(user && bcrypt.compareSync(password, user.password)) {
@@ -33,7 +33,7 @@ router.post('/login', (req, res) => {
             res.status(200).json
             ({
                 success:true,
-                message: `Welcome to the Secret Family Cookbook, ${user.username}`,
+                message: `Welcome to the Secret Family Cookbook, ${user.firstName}`,
                 token 
             });
         } else {
@@ -53,7 +53,7 @@ router.post('/login', (req, res) => {
 function generateToken(user) {
     const payload = {
         userId: user.id,
-        username: user.username
+        username: user.email
     };
 
     const options = {

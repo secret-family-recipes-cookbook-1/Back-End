@@ -1,7 +1,8 @@
 const db = require('../database/dbConfig');
 
 function find() {
-    return db('users').select('id', 'username', 'password');
+    return db('users')
+    .select('id', 'username', 'email', 'password');
 }
 
 function findBy(filter) {
