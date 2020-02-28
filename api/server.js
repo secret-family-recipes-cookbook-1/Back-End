@@ -9,6 +9,7 @@ console.log(process.env.JWT_SECRET);
 const authRouter = require('../auth/auth-router.js');
 const apiRouter = require('./api-router');
 const usersRouter = require('../users/user-router');
+const recipeRouter = require('../recipes/recipe-router');
 
 const server = express();
 
@@ -19,6 +20,7 @@ server.use(express.json());
 server.use('/api/auth', authRouter);
 server.use('/api', apiRouter);
 server.use('/api/users', usersRouter);
+server.use('/api/recipes', recipeRouter);
 
 server.get('/', (req, res) => {
     res.send("Is this thing on???")

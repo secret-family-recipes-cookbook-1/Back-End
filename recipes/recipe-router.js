@@ -1,107 +1,127 @@
-const router = require('express').Router();
+require('dotenv').config();
+
+const express = require('express')
+const router = express()
+router.use(express.json());
+
+
+const knex = require('knex')
+const knexConfig = require('../knexfile')
 const restricted = require('../auth/restricted-middleware');
-const Recipes = require('./recipes-model');
+const database = knex(knexConfig.development);
 
 
 
-router.get('/', restrict, (req, res) => {
-    const user = req.user.id;
-
-    Recipes.find(user)
-        .then(recipes => {
-            res.status(200).json
-            ({ 
-                success: true,
-                message: 'Enjoy your recipes', recipes 
-            });
-        })
-        .catch(error => {
-            res.status(500).json
-            ({
-                success: false,
-                errorMessage: 'Opps. We coundn\'t find that information', error
-            })
-        });
+router.get('/', restricted, (req, res) => {
+  database('recipes').then(recipe => {
+    res.status(200).json
+    ({
+        success:true,
+        recipe
+    });
+  })
+  .catch(error => {
+    console.log(error);
+    res.status(500).json
+    ({
+        success:false, 
+        error
+    });
+  })
 })
 
-router.get('/:id', restricted, (req, res) => {
-    const user = req.user.id;
-    const recipeId = req.params.id;
 
-    Recipes.findById(recipeId, user)
-        .then(recipe => {
-            res.status(200).json
-            ({recipe});
-        })
-        .catch(error => {
-            console.log(error);
-            res.status(500).json
-            ({
-                success:false,
-                errorMessage: 'No recipe found with that id', error
-            })
-        })
-})
-
-router.post('/', restricted, (req,res) => {
-    const user = req.user.id;
-    const recipeId = req.body;
-
-    Recipes.add(recipeId, user)
-        .then(recipes => {
-            res.status(201).json(recipes);
-        })
-        .catch(error => {
-            res.status(500).json
-            ({
-                success:false,
-                errorMessage: 'No recipe added', error
-            })
-        })
-})
-
-router.delete('/:id', restricted, (req, res) => {
-    const user = req.user.id;
-    const recipeId = req.params.id;
-
-    Recipes.remove(recipeId, user)
-        .then(recipes => {
-            res.status(204).json
-            ({
-                success:true,
-                message: 'Recipe successfully deleted', recipes
-            })
-        })
-        .catch(error => {
-            res.status(500).json
-            ({
-                success:false,
-                errorMessage: 'We cannot find that recipe', error
+router.post('/', restricted,(req, res) => {
+  database('recipes').insert(req.body, ['id', 'name'])
+    .then(ids => {
+      database('recipes')
+        .where({ id: ids[0] })
+        .first()
+        .then(result => {
+          res.status(200).json
+          ({
+              succes:true,
+              result
             })
         })
     })
+    .catch(error => {
+      res.status(500).json
+      ({ 
+        success:false,  
+        errorMessage: "Unable to add recipe!",
+        error 
+        })
+    })
+})
 
 router.put('/:id', restricted, (req, res) => {
-    const user = req.user.id;
-    const recipeId = req.params.id;
-    const recipeUpdate = res.body;
+    database('recipes')
+    .where({id: req.params.id})
+    .first()
+    .then(recipe => {
+        if (recipe) {
+          res.status(200).json(recipe);
+        } else {
+          res.status(404).json
+          ({ 
+              success:false,
+              errorMessage: 'Unable update that recipe' 
+            });
+        }
+      })
+      .catch(error => {
+        res.status(500).json(error);
+      })
+})
 
-    Recipes.update(recipeId, user, recipeUpdate)
-        .then(response => {
-            res.status(200).json
-            ({
-                success:true,
-                message: 'Recipe updated successfully', response
-            })
+
+router.get('/:id', restricted, (req, res) => {
+  database('recipes')
+    .where({ id: req.params.id })
+    .first()
+    .then(recipe => {
+      if (recipe) {
+        res.status(200).json(recipe);
+      } else {
+        res.status(404).json
+        ({ 
+            success:false,
+            erroMessage: 'Unable to find that recipe' 
+        });
+      }
+    })
+    .catch(error => {
+      res.status(500).json(error);
+    })
+})
+
+
+
+router.delete('/:id', restricted, (req, res) => {
+  database('recipes')
+    .where({ id: req.params.id })
+    .del()
+    .then(count => {
+      if (count > 0) {
+        res.status(200).json({
+          message: "Recipe deleted"
         })
-        .catch(error => {
-            console.log(error)
-            res.status(500).json
-            ({
-                sucess:false,
-                errorMessage: 'oops. That didn\'t work. Try again', error
-            })
+
+      } else {
+        res.status(404).json
+        ({ 
+            success:false,
+            errorMessage: 'This recipe does not exist' 
         })
+      }
+
+    })
+    .catch(error => {
+      res.status(500).json(error)
     })
 
-    module.exports = router;
+})
+
+module.exports = router;
+
