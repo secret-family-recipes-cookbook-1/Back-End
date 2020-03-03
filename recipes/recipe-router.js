@@ -58,15 +58,24 @@ router.post('/', restricted,(req, res) => {
 router.put('/:id', restricted, (req, res) => {
     database('recipes')
     .where({id: req.params.id})
-    .first()
-    .then(recipe => {
-        if (recipe) {
-          res.status(200).json(recipe);
+    .update
+      ({
+        user_id: req.body.user_id,
+        title:req.body.title,
+        source: req.body.source,
+        ingredients: req.body.ingredients,
+        instructions: req.body.instructions,
+        category: req.body.category
+      })
+    .then(updatedRecipe => {
+        if (updatedRecipe) {
+          res.status(200).json(updatedRecipe);
+          console.log("new recipe:", req.body.title)
         } else {
           res.status(404).json
           ({ 
               success:false,
-              errorMessage: 'Unable update that recipe' 
+              errorMessage: 'Unable to update that recipe' 
             });
         }
       })
