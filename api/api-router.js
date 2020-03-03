@@ -10,4 +10,5 @@ router.get('/', (req, res) => {
     res.json({api: "If you can\'t take the heat, stay out of the kitchen"});
 });
 
+
 module.exports = router;
