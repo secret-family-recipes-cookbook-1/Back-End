@@ -7,6 +7,7 @@ module.exports = (req, res, next) => {
 
     if (token) {
         jwt.verify(token, process.env.JWT_SECRET, (err, decodedToken) => {
+            console.log('testing')
             if(err) {
                 console.log('failed to verify', err);
                 res.status(401).json
