@@ -3,7 +3,6 @@ const cors = require('cors');
 const helmet = require('helmet');
 
 require('dotenv').config();
-console.log(process.env.JWT_SECRET);
 
 const authRouter = require('../auth/auth-router.js');
 const apiRouter = require('./api-router');
