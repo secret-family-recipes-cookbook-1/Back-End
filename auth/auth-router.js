@@ -34,7 +34,7 @@ router.post('/login', (req, res) => {
             ({
                 success:true,
                 message: `Welcome to the Secret Family Cookbook, ${user.firstName}`,
-                token 
+                token
             });
         } else {
             res.status(401).json
@@ -60,7 +60,7 @@ function generateToken(user) {
     const options = {
         expiresIn: '1d'
     };
-    return jwt.sign(payload, process.env.JWT_Secret, options);
+    return jwt.sign(payload, process.env.JWT_SECRET, options);
 }
 
 module.exports = router;
