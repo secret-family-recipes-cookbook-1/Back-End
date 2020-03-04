@@ -1,55 +1,55 @@
 
 exports.up = async function(knex) {
-  await knex.schema.createTable('users', table => {
-    table.increments();
+  return await knex.schema.createTable('users', users => {
+    users.increments();
 
-    table   
+    users   
         .string('firstName', 128)
         .notNullable();
 
-    table   
+    users   
         .string('lastName', 128)
         .notNullable();
 
-    table   
+    users   
         .string('email', 128)
         .notNullable()
         .unique();
     
-    table
+    users
         .string('password', 128)
         .notNullable();
 
-    table
+    users
         .string('title', 128);
-});
+})
 
 
 
-await knex.schema.createTable('recipes', table=> {
-    table.increments();
+.createTable('recipes', recipes=> {
+    recipes.increments();
 
-    table
+    recipes
     .text('title')
     .notNullable();
 
-    table
+    recipes
     .text('source')
     .notNullable();
 
-    table
+    recipes
     .text('ingredients')
     .notNullable();
 
-    table
+    recipes
     .text('instructions')
     .notNullable();
 
-    table
+    recipes
     .text('category')
     .notNullable();
 
-    table
+    recipes
     .integer('user_id')
       .unsigned()
       .notNullable()
@@ -64,7 +64,8 @@ await knex.schema.createTable('recipes', table=> {
 
 exports.down = function(knex) {
   return knex.schema 
-    .dropTableIfExists('recipes')
     .dropTableIfExists('users')
+    .dropTableIfExists('recipes')
+
 
 };
