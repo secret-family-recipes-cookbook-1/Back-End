@@ -24,6 +24,7 @@ router.post('/register', (req, res) => {
 
 router.post('/login', (req, res) => {
     let {email, password} = req.body;
+    let { id } = req.user;
 
     Users.findBy({email})
     .first()
@@ -34,7 +35,8 @@ router.post('/login', (req, res) => {
             ({
                 success:true,
                 message: `Welcome to the Secret Family Cookbook, ${user.firstName}`,
-                token
+                token, 
+                id
             });
         } else {
             res.status(401).json
