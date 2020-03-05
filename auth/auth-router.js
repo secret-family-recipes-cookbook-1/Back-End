@@ -35,6 +35,7 @@ router.post('/login', (req, res) => {
                 success:true,
                 message: `Welcome to the Secret Family Cookbook, ${user.firstName}`,
                 token, 
+                id: user.id
             });
         } else {
             res.status(401).json
