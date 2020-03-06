@@ -4,7 +4,8 @@ const helmet = require('helmet');
 
 require('dotenv').config();
 
-const authRouter = require('../auth/auth-router.js');
+const authRouter = require('../auth/auth-router');
+// const restricted = reauire('../auth/authenticate-middleware');
 const apiRouter = require('./api-router');
 const usersRouter = require('../users/user-router');
 const recipeRouter = require('../recipes/recipe-router');
